@@ -16,18 +16,19 @@ theta0 = np.pi/4
 theta_dot0 = 0
 
 #animation parameters
-t_eval = np.linspace(0,t_final,fps*t_final + 1
 t_final = 5
 fps = 30
+t_eval = np.linspace(0,t_final, fps*t_final + 1)
+
 
 def pendulum_ode(t,y):
     return(y[1], -g*np.sin(y[0])/l)
 
 def realistic_pendulum_ode(t,y):
-    return(y[1], -g*np.sin(y[0])/l - (c/m*ell**2)*y[1])
+    return(y[1], -g*np.sin(y[0])/l - (c/m*l**2)*y[1])
 
-sol = solve_ivp(pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval))
-sol_realistic = solve_ivp(realistic_pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval)
+sol = solve_ivp(pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=t_eval)
+sol_realistic = solve_ivp(realistic_pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=t_eval)
 
 theta, theta_dot = sol.y
 t = sol.t
@@ -78,7 +79,7 @@ def animate(i):
 
 anim = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
-anim.save('time_domain.mp4', writer=ffmpeg_writer)
+anim.save('output/time_domain.mp4', writer=ffmpeg_writer)
 
 
 
