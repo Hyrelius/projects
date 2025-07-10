@@ -15,6 +15,8 @@ c = 0.05
 theta0 = np.pi/4 
 theta_dot0 = 0
 
+#animation parameters
+t_eval = np.linspace(0,t_final,fps*t_final + 1
 t_final = 5
 fps = 30
 
@@ -24,8 +26,8 @@ def pendulum_ode(t,y):
 def realistic_pendulum_ode(t,y):
     return(y[1], -g*np.sin(y[0])/l - (c/m*ell**2)*y[1])
 
-sol = solve_ivp(pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=np.linspace(0,t_final,fps*t_final + 1))
-sol_realistic = solve_ivp(realistic_pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=np.linspace(0,t_final,fps*t_final + 1))
+sol = solve_ivp(pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval))
+sol_realistic = solve_ivp(realistic_pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval)
 
 theta, theta_dot = sol.y
 t = sol.t
@@ -36,10 +38,8 @@ theta_dot_deg = np.degrees(sol.y[1])
 theta_deg_realistic = np.degrees(sol_realistic.y[0])
 theta_dot_deg_realistic = np.degrees(sol_realistic.y[1])
 
+#BELOW CODE CREDIT TO logdog
 
-# %%
-# bonus! Customize color scheme in matplotlib
-# change matplotlib defaults
 plt.rcParams['axes.facecolor'] = 'black'
 plt.rcParams['axes.labelcolor'] = 'white'
 plt.rcParams['axes.titlecolor'] = 'white'
@@ -49,8 +49,6 @@ plt.rcParams['xtick.labelcolor'] = 'white'
 plt.rcParams['ytick.labelcolor'] = 'white'
 plt.rcParams['grid.color'] = '#707070'
 
-# %%
-# create a plot of theta and theta_dot vs time
 plt.plot(t, theta_deg, 'r', lw=2, label=r'$\theta$')
 plt.plot(t, theta_dot_deg, 'b', lw=2, label=r'$\dot \theta$')
 plt.title('Simple Pendulum')
@@ -60,8 +58,6 @@ plt.ylabel(r'$\theta$ (deg), $\dot \theta$ (deg/s)')
 plt.grid()
 plt.show()
 
-# %%
-# animate theta, theta_dot vs time
 fig, ax = plt.subplots()
 
 theta_curve, = ax.plot(t[0], theta_deg[0], 'r')
@@ -79,15 +75,14 @@ def animate(i):
     theta_curve.set_data(t[:i+1], theta_deg[:i+1])
     theta_dot_curve.set_data(t[:i+1], theta_dot_deg[:i+1])
 
-# save video @ 30 fps
+
 anim = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
 anim.save('time_domain.mp4', writer=ffmpeg_writer)
-# you need to make sure the ffmpeg is installed on your machine and 
-# the path is configured correctly. see Troubleshooting for details
 
-# %%
-# create a phase diagram of theta, theta_dot
+
+
+
 plt.plot(theta_deg, theta_dot_deg, 'b')
 plt.title('Simple Pendulum: Phase Diagram')
 plt.xlabel(r'$\theta$ (deg)')
@@ -95,8 +90,6 @@ plt.ylabel(r'$\dot \theta (deg/s)$')
 plt.grid()
 plt.show()
 
-# %%
-# animate the phase diagram
 fig, ax = plt.subplots()
 
 phase_curve, = ax.plot(theta_deg[0], theta_dot_deg[0], 'b')
@@ -117,12 +110,11 @@ ani = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
 ani.save('phase_diagram.mp4', writer=ffmpeg_writer)
 
-# %%
-# create an animation of the pendulum swining with Matplotlib
+
 def pend_pos(theta):
     return (ell*np.sin(theta), -ell*np.cos(theta))
 
-# create figure
+
 fig = plt.figure()
 ax = fig.add_subplot(aspect='equal')
 ax.set_xlim(-1, 1)
@@ -133,23 +125,22 @@ x0, y0 = pend_pos(theta0)
 line, = ax.plot([0, x0], [0, y0], lw=2, c='k')
 circle = ax.add_patch(plt.Circle(pend_pos(theta0), 0.05, fc='r', zorder=3))
 
-# animate each frame "i"
+
 def animate(i):
     x,y = pend_pos(theta[i])
     line.set_data([0, x], [0, y])
     circle.set_center((x, y))
 
-# save a video: 30 fps
+
 ani = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
 ani.save('pend.mp4', writer=ffmpeg_writer)
 
-# %%
-# animate everything together!
+
 fig = plt.figure()
 gs = gridspec.GridSpec(2,2, width_ratios=[1,2], height_ratios=[1,1])
 
-# theta, theta_dot vs time
+
 ax0 = fig.add_subplot(gs[0,0])
 ax0.set_xlim(0, t_final)
 ax0.set_ylim(-100, 100)
@@ -171,7 +162,7 @@ ax1.grid()
 phase_curve, = ax1.plot(theta_deg[0], theta_dot_deg[0], 'b')
 phase_dot, =  ax1.plot(theta_deg[0], theta_dot_deg[0], 'ro')
 
-# pendulum
+
 def pend_pos(theta):
     return (ell*np.sin(theta), -ell*np.cos(theta))
 
@@ -179,7 +170,7 @@ ax2 = fig.add_subplot(gs[:,1])
 ax2.set_xlim(-1, 1)
 ax2.set_ylim(-1.5, 0.5)
 
-# draw the pendulum
+
 x0, y0 = pend_pos(theta0)
 line, = ax2.plot([0, x0], [0, y0], lw=2, c='k')
 circle = ax2.add_patch(plt.Circle(pend_pos(theta0), 0.05, fc='r', zorder=3))
@@ -196,7 +187,7 @@ def animate(i):
     line.set_data([0, x], [0, y])
     circle.set_center((x, y))
 
-# save a video: 30 fps
+
 ani = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
 ani.save('all.mp4', writer=ffmpeg_writer)
