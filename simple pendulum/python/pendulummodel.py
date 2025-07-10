@@ -16,7 +16,7 @@ theta0 = np.pi/4
 theta_dot0 = 0
 
 #animation parameters
-t_final = 5
+t_final = 50
 fps = 30
 t_eval = np.linspace(0,t_final, fps*t_final + 1)
 
@@ -30,11 +30,11 @@ def realistic_pendulum_ode(t,y):
 sol = solve_ivp(pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=t_eval)
 sol_realistic = solve_ivp(realistic_pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=t_eval)
 
-theta, theta_dot = sol.y
-t = sol.t
+theta, theta_dot = sol_realistic.y
+t = sol_realistic.t
 
-theta_deg = np.degrees(sol.y[0])
-theta_dot_deg = np.degrees(sol.y[1])
+theta_deg = np.degrees(sol_realistic.y[0])
+theta_dot_deg = np.degrees(sol_realistic.y[1])
 
 theta_deg_realistic = np.degrees(sol_realistic.y[0])
 theta_dot_deg_realistic = np.degrees(sol_realistic.y[1])
