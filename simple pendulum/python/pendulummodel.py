@@ -16,7 +16,7 @@ theta0 = np.pi/4
 theta_dot0 = 0
 
 #animation parameters
-t_final = 5
+t_final = 60
 fps = 30
 t_eval = np.linspace(0,t_final, fps*t_final + 1)
 
@@ -30,18 +30,18 @@ def realistic_pendulum_ode(t,y):
 sol = solve_ivp(pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=t_eval)
 sol_realistic = solve_ivp(realistic_pendulum_ode, [0,t_final], (theta0, theta_dot0), t_eval=t_eval)
 
-theta, theta_dot = sol.y
-t = sol.t
+#theta, theta_dot = sol.y
+#t = sol.t
 
-theta_deg = np.degrees(sol.y[0])
-theta_dot_deg = np.degrees(sol.y[1])
+#theta_deg = np.degrees(sol.y[0])
+#theta_dot_deg = np.degrees(sol.y[1])
 
 #may need to adjust t_final for realistic pendulum or increase c
-#theta, theta_dot = sol_realistic.y
-#t = sol_realistic.t
+theta, theta_dot = sol_realistic.y
+t = sol_realistic.t
 
-#theta_deg = np.degrees(sol_realistic.y[0])
-#theta_dot_deg = np.degrees(sol_realistic.y[1])
+theta_deg = np.degrees(sol_realistic.y[0])
+theta_dot_deg = np.degrees(sol_realistic.y[1])
 
 #BELOW CODE CREDIT TO logdog
 
@@ -101,8 +101,8 @@ phase_curve, = ax.plot(theta_deg[0], theta_dot_deg[0], 'b')
 phase_dot, =  ax.plot(theta_deg[0], theta_dot_deg[0], 'ro')
 
 ax.set_title('Simple Pendulum: Phase Diagram')
-ax.set_xlim(-35, 35)
-ax.set_ylim(-100, 100)
+ax.set_xlim(-70, 70)
+ax.set_ylim(-200, 200)
 ax.set_xlabel(r'$\theta$ (deg)')
 ax.set_ylabel(r'$\dot \theta$ (deg/s)')
 ax.grid()
@@ -113,11 +113,11 @@ def animate(i):
 
 ani = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
-ani.save('phase_diagram.mp4', writer=ffmpeg_writer)
+ani.save('output/phase_diagram.mp4', writer=ffmpeg_writer)
 
 
 def pend_pos(theta):
-    return (ell*np.sin(theta), -ell*np.cos(theta))
+    return (l*np.sin(theta), -l*np.cos(theta))
 
 
 fig = plt.figure()
@@ -139,7 +139,7 @@ def animate(i):
 
 ani = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
-ani.save('pend.mp4', writer=ffmpeg_writer)
+ani.save('output/pend.mp4', writer=ffmpeg_writer)
 
 
 fig = plt.figure()
@@ -158,8 +158,8 @@ theta_dot_curve, = ax0.plot(t[0], theta_dot_deg[0], 'r')
 
 # phase diagram
 ax1 = fig.add_subplot(gs[1,0])
-ax1.set_xlim(-100, 100)
-ax1.set_ylim(-100, 100)
+ax1.set_xlim(-200, 200)
+ax1.set_ylim(-200, 200)
 ax1.set_xlabel(r'$\theta$ (deg)')
 ax1.set_ylabel(r'$\dot \theta$ (deg/s)')
 ax1.grid()
@@ -169,7 +169,7 @@ phase_dot, =  ax1.plot(theta_deg[0], theta_dot_deg[0], 'ro')
 
 
 def pend_pos(theta):
-    return (ell*np.sin(theta), -ell*np.cos(theta))
+    return (l*np.sin(theta), -l*np.cos(theta))
 
 ax2 = fig.add_subplot(gs[:,1])
 ax2.set_xlim(-1, 1)
@@ -186,7 +186,7 @@ def animate(i):
     theta_dot_curve.set_data(t[:i+1], theta_dot_deg[:i+1])
 
     phase_curve.set_data(theta_deg[:i+1], theta_dot_deg[:i+1])
-    phase_dot.set_data((theta_deg[i], theta_dot_deg[i]))
+    phase_dot.set_data([theta_deg[i]], [theta_dot_deg[i]])
 
     x, y = pend_pos(theta[i])
     line.set_data([0, x], [0, y])
@@ -195,4 +195,4 @@ def animate(i):
 
 ani = animation.FuncAnimation(fig, animate, frames=len(t))
 ffmpeg_writer = animation.FFMpegWriter(fps=fps)
-ani.save('all.mp4', writer=ffmpeg_writer)
+ani.save('output/all.mp4', writer=ffmpeg_writer)
