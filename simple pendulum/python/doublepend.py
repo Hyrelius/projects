@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 #constants
 g = 9.81
@@ -29,7 +30,11 @@ but we have used newtonian notation for clarity and readability
 change variables above for different conditions
 animtion coming soon^tm???
 """
-
+"""
+velocity verlet (taken from https://www.algorithm-archive.org/contents/verlet_integration/verlet_integration.html)
+x(t+dt) = x(t) + v(t)dt + 1/2a(t)dt^2
+v(t+dt) = v(t) + 1/2(a(t) + a(t+dt))dt
+"""
 
 def calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2):
     delta = theta2 - theta1
@@ -80,4 +85,12 @@ def cartesian_coordinates(theta1, theta2, L1, L2):
     y2 = y1 - L2 * np.cos(theta2)
     return x1, y1, x2, y2
 
+
+
 theta1_array, theta2_array, w1_array, w2_array = velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2)
+time_array = np.arange(0, T, dt)
+
+#plot angles against time
+plt.plot(time_array, theta1_array)
+plt.plot(time_array, theta2_array)
+plt.show()
