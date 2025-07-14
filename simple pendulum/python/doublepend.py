@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #constants
-g = -9.81
+g = 9.81
 
 #pendulum variables
 L1 = 1.0
@@ -18,7 +18,7 @@ w2 = 0
 
 #time step
 dt = 0.001
-T = 10.0
+T = 60
 steps = int(T/dt)
 
 """
@@ -38,8 +38,8 @@ v(t+dt) = v(t) + 1/2(a(t) + a(t+dt))dt
 
 def calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2):
     delta = theta2 - theta1
-    w1_dot = (m2*L1*(w1**2)*np.sin(delta)*np.cos(delta) + m2*g*np.sin(theta2)*np.cos(delta) + m2*L2*(w2**2)*np.sin(delta))/(L1*(m1 + m2*(1 - np.cos(delta)**2)))
-    w2_dot = (-m2*L2*(w2**2)*np.sin(delta)*np.cos(delta) + (m1 + m2)*g*np.sin(theta1) - m2*L1*(w1**2)*np.sin(delta))/(L2*(m1 + m2*(1 - np.cos(delta)**2)))
+    w1_dot = (m2 * L1 * w1**2 * np.sin(delta) * np.cos(delta) + m2 * g * np.sin(theta2) * np.cos(delta) + m2 * L2 * w2**2 *np.sin(delta) -(m1 + m2) * g * np.sin(theta1)) / ((m1 + m2) * L1 - m2 * L1 * np.cos(delta)**2)
+    w2_dot = (-m2 * L2  * w2**2 * np.sin(delta) * np.cos(delta) + (m1 + m2) * (g * np.sin(theta1) * np.cos(delta) - L1 * w1**2 * np.sin(delta) - g * np.sin(theta2))) / ((L2/L1) * ((m1 + m2) * L1 - m2 * L1 * np.cos(delta)**2))
     return w1_dot, w2_dot
 
 #inputs intial conditions and outputs array for said conditions
@@ -66,6 +66,9 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
         #calculate new velocities with new acceleration
         w1_new = w1 + 0.5 * (w1_dot + w1_dot_new) * dt
         w2_new = w2 + 0.5 * (w2_dot + w2_dot_new) * dt
+
+        w1_array[i] = w1_new
+        w2_array[i] = w2_new
 
         #update variables for next loop
         theta1 = theta1_new
