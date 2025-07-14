@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #constants
-g = 9.81
+g = -9.81
 
 #pendulum variables
 L1 = 1.0
@@ -11,8 +11,8 @@ m1 = 1.0
 m2 = 1.0
 
 #initial conditions
-theta1 = np.pi/4
-theta2 = np.pi/4
+theta1 = np.pi/2
+theta2 = np.pi/2
 w1 = 0
 w2 = 0
 
@@ -93,4 +93,42 @@ time_array = np.arange(0, T, dt)
 #plot angles against time
 plt.plot(time_array, theta1_array)
 plt.plot(time_array, theta2_array)
+plt.show()
+
+# Animation of the double pendulum
+from matplotlib.animation import FuncAnimation
+
+# Calculate (x, y) positions for both bobs over time
+x1, y1, x2, y2 = cartesian_coordinates(theta1_array, theta2_array, L1, L2)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.set_xlim(-L1-L2-0.2, L1+L2+0.2)
+ax.set_ylim(-L1-L2-0.2, L1+L2+0.2)
+ax.set_aspect('equal')
+ax.grid()
+
+line, = ax.plot([], [], 'o-', lw=2)
+trace, = ax.plot([], [], '-', lw=1, alpha=0.5)
+
+# For tracing the path of the second bob
+trace_x, trace_y = [], []
+
+# Initialization function
+def init():
+    line.set_data([], [])
+    trace.set_data([], [])
+    return line, trace
+
+# Animation function
+def update(frame):
+    thisx = [0, x1[frame], x2[frame]]
+    thisy = [0, y1[frame], y2[frame]]
+    line.set_data(thisx, thisy)
+    trace_x.append(x2[frame])
+    trace_y.append(y2[frame])
+    trace.set_data(trace_x, trace_y)
+    return line, trace
+
+ani = FuncAnimation(fig, update, frames=range(0, steps, 10), init_func=init, blit=True, interval=10)
+plt.title('Double Pendulum Animation')
 plt.show()
