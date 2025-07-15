@@ -49,7 +49,9 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
     theta2_array = np.zeros([steps])
     w1_array = np.zeros([steps])
     w2_array = np.zeros([steps])
-
+    lagrangian = np.zeros([steps])
+    kinetic = np.zeros([steps])
+    potential = np.zeros([steps])
     #loop to loop over each step and add results to arrays
     for i in range(steps):
         w1_dot, w2_dot = calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2)
@@ -69,6 +71,9 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
 
         w1_array[i] = w1_new
         w2_array[i] = w2_new
+
+        #add calculations for lagrangian etc
+        
 
         #update variables for next loop
         theta1 = theta1_new
