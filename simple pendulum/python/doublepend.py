@@ -42,6 +42,11 @@ def calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2):
     w2_dot = (-m2 * L2  * w2**2 * np.sin(delta) * np.cos(delta) + (m1 + m2) * (g * np.sin(theta1) * np.cos(delta) - L1 * w1**2 * np.sin(delta) - g * np.sin(theta2))) / ((L2/L1) * ((m1 + m2) * L1 - m2 * L1 * np.cos(delta)**2))
     return w1_dot, w2_dot
 
+
+def calculate_lagrangian():
+    #take in variables needed
+    pass
+
 #inputs intial conditions and outputs array for said conditions
 def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
 
@@ -103,6 +108,8 @@ plt.plot(time_array, theta1_array)
 plt.plot(time_array, theta2_array)
 plt.show()
 
+
+#============================
 # Animation of the double pendulum
 from matplotlib.animation import FuncAnimation
 
