@@ -18,7 +18,7 @@ w2 = 0
 
 #time step
 dt = 0.001
-T = 60
+T = 200
 steps = int(T/dt)
 
 """
@@ -42,6 +42,90 @@ def calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2):
     w2_dot = (-m2 * L2  * w2**2 * np.sin(delta) * np.cos(delta) + (m1 + m2) * (g * np.sin(theta1) * np.cos(delta) - L1 * w1**2 * np.sin(delta) - g * np.sin(theta2))) / ((L2/L1) * ((m1 + m2) * L1 - m2 * L1 * np.cos(delta)**2))
     return w1_dot, w2_dot
 
+
+def calculate_energies(theta1, theta2, w1, w2, L1, L2, m1, m2):
+    #take in variables needed
+    #calculate kinetic energy
+    T = 0.5*m1*(L1*w1)**2+0.5*m2*((L1**2)*(w1**2)+(L2**2)*(w2**2)+2*L1*L2*w1*w2*np.cos(theta2-theta1))
+    #calculate potential energy
+    V = -m1*g*L1*np.cos(theta1)-m2*g*(L1*np.cos(theta1)+L2*np.cos(theta2))
+    #calculate lagrangian
+    L = T - V
+    #calculate hamiltonian
+    H = T + V
+    #return all values
+    return T, V, L, H
+
+
+def RK4(theta1, theta2, w1, w2, L1, L2, m1, m2):
+    theta1_array = np.zeros([steps])
+    theta2_array = np.zeros([steps])
+    w1_array = np.zeros([steps])
+    w2_array = np.zeros([steps])
+    lagrangian = np.zeros([steps])
+    kinetic = np.zeros([steps])
+    potential = np.zeros([steps])
+    hamiltonian = np.zeros([steps])
+    for i in range(steps):
+        # k1
+        w1_dot1, w2_dot1 = calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2)
+        k1_theta1 = w1
+        k1_theta2 = w2
+        k1_w1 = w1_dot1
+        k1_w2 = w2_dot1
+
+        # k2
+        w1_temp = w1 + 0.5 * dt * k1_w1
+        w2_temp = w2 + 0.5 * dt * k1_w2
+        theta1_temp = theta1 + 0.5 * dt * k1_theta1
+        theta2_temp = theta2 + 0.5 * dt * k1_theta2
+        w1_dot2, w2_dot2 = calculate_acceleration(theta1_temp, theta2_temp, w1_temp, w2_temp, L1, L2, m1, m2)
+        k2_theta1 = w1_temp
+        k2_theta2 = w2_temp
+        k2_w1 = w1_dot2
+        k2_w2 = w2_dot2
+
+        # k3
+        w1_temp = w1 + 0.5 * dt * k2_w1
+        w2_temp = w2 + 0.5 * dt * k2_w2
+        theta1_temp = theta1 + 0.5 * dt * k2_theta1
+        theta2_temp = theta2 + 0.5 * dt * k2_theta2
+        w1_dot3, w2_dot3 = calculate_acceleration(theta1_temp, theta2_temp, w1_temp, w2_temp, L1, L2, m1, m2)
+        k3_theta1 = w1_temp
+        k3_theta2 = w2_temp
+        k3_w1 = w1_dot3
+        k3_w2 = w2_dot3
+
+        # k4
+        w1_temp = w1 + dt * k3_w1
+        w2_temp = w2 + dt * k3_w2
+        theta1_temp = theta1 + dt * k3_theta1
+        theta2_temp = theta2 + dt * k3_theta2
+        w1_dot4, w2_dot4 = calculate_acceleration(theta1_temp, theta2_temp, w1_temp, w2_temp, L1, L2, m1, m2)
+        k4_theta1 = w1_temp
+        k4_theta2 = w2_temp
+        k4_w1 = w1_dot4
+        k4_w2 = w2_dot4
+
+        # Update
+        theta1 += (dt / 6) * (k1_theta1 + 2 * k2_theta1 + 2 * k3_theta1 + k4_theta1)
+        theta2 += (dt / 6) * (k1_theta2 + 2 * k2_theta2 + 2 * k3_theta2 + k4_theta2)
+        w1 += (dt / 6) * (k1_w1 + 2 * k2_w1 + 2 * k3_w1 + k4_w1)
+        w2 += (dt / 6) * (k1_w2 + 2 * k2_w2 + 2 * k3_w2 + k4_w2)
+
+        theta1_array[i] = theta1
+        theta2_array[i] = theta2
+        w1_array[i] = w1
+        w2_array[i] = w2
+
+        T, V, L, H = calculate_energies(theta1, theta2, w1, w2, L1, L2, m1, m2)
+        lagrangian[i] = L
+        kinetic[i] = T
+        potential[i] = V
+        hamiltonian[i] = H
+    return theta1_array, theta2_array, w1_array, w2_array, lagrangian, kinetic, potential, hamiltonian
+
+
 #inputs intial conditions and outputs array for said conditions
 def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
 
@@ -49,7 +133,10 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
     theta2_array = np.zeros([steps])
     w1_array = np.zeros([steps])
     w2_array = np.zeros([steps])
-
+    lagrangian = np.zeros([steps])
+    kinetic = np.zeros([steps])
+    potential = np.zeros([steps])
+    hamiltonian = np.zeros([steps])
     #loop to loop over each step and add results to arrays
     for i in range(steps):
         w1_dot, w2_dot = calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2)
@@ -70,14 +157,21 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
         w1_array[i] = w1_new
         w2_array[i] = w2_new
 
+
         #update variables for next loop
         theta1 = theta1_new
         theta2 = theta2_new
         w1 = w1_new
         w2 = w2_new
 
+        #add calculations for lagrangian etc
+        T, V, L, H = calculate_energies(theta1_new, theta2_new, w1_new, w2_new, L1, L2, m1, m2)
+        lagrangian[i] = L
+        kinetic[i] = T
+        potential[i] = V
+        hamiltonian[i] = H
     #self explanatory
-    return theta1_array, theta2_array, w1_array, w2_array
+    return theta1_array, theta2_array, w1_array, w2_array, lagrangian, kinetic, potential, hamiltonian
 
 #copius comments because i am dumb
 
@@ -90,14 +184,34 @@ def cartesian_coordinates(theta1, theta2, L1, L2):
 
 
 
-theta1_array, theta2_array, w1_array, w2_array = velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2)
+theta1_array, theta2_array, w1_array, w2_array, lagrangian, kinetic, potential, hamiltonian = RK4(theta1, theta2, w1, w2, L1, L2, m1, m2)
+#theta1_array_RK4, theta2_array_RK4, w1_array_RK4, w2_array_RK4, lagrangian_RK4, kinetic_RK4, potential_RK4, hamiltonian_RK4 = RK4(theta1, theta2, w1, w2, L1, L2, m1, m2)
 time_array = np.arange(0, T, dt)
+
 
 #plot angles against time
 plt.plot(time_array, theta1_array)
+#plt.plot(time_array, theta1_array_RK4)
+#plt.legend(["Velocity Verlet", "RK4"])
+#plt.show()
+
 plt.plot(time_array, theta2_array)
+#plt.plot(time_array, theta2_array_RK4)
+#plt.legend(["Velocity Verlet", "RK4"])
 plt.show()
 
+#plot lagrangian and hamiltonian against time
+plt.plot(time_array, lagrangian)
+#plt.plot(time_array, lagrangian_RK4)
+#plt.legend(["Velocity Verlet", "RK4"])
+plt.show()
+
+plt.plot(time_array, hamiltonian)
+#plt.plot(time_array, hamiltonian_RK4)
+#plt.legend(["Velocity Verlet", "RK4"])
+plt.show()
+
+#============================
 # Animation of the double pendulum
 from matplotlib.animation import FuncAnimation
 
