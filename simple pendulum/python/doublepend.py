@@ -43,9 +43,18 @@ def calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2):
     return w1_dot, w2_dot
 
 
-def calculate_lagrangian():
+def calculate_energies(theta1, theta2, w1, w2, L1, L2, m1, m2):
     #take in variables needed
-    pass
+    #calculate kinetic energy
+    T = 0.5*m1*(L1*w1)**2+0.5*m2*((L1**2)*(w1**2)+(L2**2)*(w2**2)+2*L1*L2*w1*w2*np.cos(theta2-theta1))
+    #calculate potential energy
+    V = -m1*g*L1*np.cos(theta1)-m2*g*(L1*np.cos(theta1)+L2*np.cos(theta2))
+    #calculate lagrangian
+    L = T - V
+    #calculate hamiltonian
+    H = T + V
+    #return all values
+    return T, V, L, H
 
 #inputs intial conditions and outputs array for said conditions
 def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
@@ -57,6 +66,7 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
     lagrangian = np.zeros([steps])
     kinetic = np.zeros([steps])
     potential = np.zeros([steps])
+    hamiltonian = np.zeros([steps])
     #loop to loop over each step and add results to arrays
     for i in range(steps):
         w1_dot, w2_dot = calculate_acceleration(theta1, theta2, w1, w2, L1, L2, m1, m2)
@@ -77,8 +87,6 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
         w1_array[i] = w1_new
         w2_array[i] = w2_new
 
-        #add calculations for lagrangian etc
-        
 
         #update variables for next loop
         theta1 = theta1_new
@@ -86,8 +94,14 @@ def velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2):
         w1 = w1_new
         w2 = w2_new
 
+        #add calculations for lagrangian etc
+        T, V, L, H = calculate_energies(theta1_new, theta2_new, w1_new, w2_new, L1, L2, m1, m2)
+        lagrangian[i] = L
+        kinetic[i] = T
+        potential[i] = V
+        hamiltonian[i] = H
     #self explanatory
-    return theta1_array, theta2_array, w1_array, w2_array
+    return theta1_array, theta2_array, w1_array, w2_array, lagrangian, kinetic, potential, hamiltonian
 
 #copius comments because i am dumb
 
@@ -100,14 +114,24 @@ def cartesian_coordinates(theta1, theta2, L1, L2):
 
 
 
-theta1_array, theta2_array, w1_array, w2_array = velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2)
+theta1_array, theta2_array, w1_array, w2_array, lagrangian, kinetic, potential, hamiltonian = velocity_verlet(theta1, theta2, w1, w2, L1, L2, m1, m2)
 time_array = np.arange(0, T, dt)
+
+
+print("Max H:", np.max(hamiltonian))
+print("Min H:", np.min(hamiltonian))
+print("ΔH:", np.max(hamiltonian) - np.min(hamiltonian))
 
 #plot angles against time
 plt.plot(time_array, theta1_array)
 plt.plot(time_array, theta2_array)
 plt.show()
 
+#plot lagrangian and hamiltonian against time
+plt.plot(time_array, lagrangian)
+plt.show()
+plt.plot(time_array, hamiltonian)
+plt.show()
 
 #============================
 # Animation of the double pendulum
