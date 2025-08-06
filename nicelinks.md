@@ -9,3 +9,4 @@
 
 ## stuff to remember to do
 taylor series
+figure out latex in markdown
