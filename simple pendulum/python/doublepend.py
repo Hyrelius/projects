@@ -183,10 +183,11 @@ def cartesian_coordinates(theta1, theta2, L1, L2):
     return x1, y1, x2, y2
 
 
-
+print("running")
 theta1_array, theta2_array, w1_array, w2_array, lagrangian, kinetic, potential, hamiltonian = RK4(theta1, theta2, w1, w2, L1, L2, m1, m2)
 #theta1_array_RK4, theta2_array_RK4, w1_array_RK4, w2_array_RK4, lagrangian_RK4, kinetic_RK4, potential_RK4, hamiltonian_RK4 = RK4(theta1, theta2, w1, w2, L1, L2, m1, m2)
 time_array = np.arange(0, T, dt)
+
 
 
 #plot angles against time
