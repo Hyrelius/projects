@@ -1,11 +1,7 @@
 #each ball contains its state, which is an array of its positions and velocities
-#import sys
-#import os
-#import numpy as np 
-
-#sys.path.append(os.path.join(os.path.dirname(__file__), 'physiks_library'))
-
 from physiks_library.rk4 import *
+from physiks_library.diffrential_equations import basic
+
 
 class ball:
     def __innit__(self, state):
@@ -18,9 +14,10 @@ class ball:
     def get_velocity(self):
         n = int(len(self.state) / 2)
         return self.state[n:] 
-
-rk4_step()
 state = [1,2,5,6]
 baller = ball()
 baller.state = state
+baller.state = rk4_step(basic, state, 0.1, 0)
+
+
 print(baller.get_position())
