@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iomanip>
 #include <chrono>
+#include "physics_library/integrators/integrators.h"
+
 // ai code whilst i learn c++
 //sadly cpp is 196 times faster 
 //ignore my schizo questions future me
@@ -91,7 +93,7 @@ void calculate_errors(const std::vector<double>& numerical, const std::vector<do
 int main() {
     using clock = std::chrono::high_resolution_clock;
     auto start_time = clock::now();  // Start timer
-
+    herro();
     // Time array
     std::vector<double> t;
     for (double ti = 0.0; ti < t_max; ti += dt)
