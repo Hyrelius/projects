@@ -4,6 +4,9 @@
 #include <fstream>
 #include <iomanip>
 #include <chrono>
+// ai code whilst i learn c++
+//sadly cpp is 196 times faster 
+//ignore my schizo questions future me
 //                                                                                                 what do each of these do?
 const double PI = std::acos(-1.0); // Define M_PI if not already defined
 
