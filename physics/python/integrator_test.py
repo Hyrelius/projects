@@ -2,6 +2,7 @@ from physlibrary.integrators import rk4, velocity_verlet, euler
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
+import datetime as dte
 #simple harmonic oscillator test
 
 #parameters
@@ -38,7 +39,7 @@ def run_simulation(step_func, state, t_array):
         s = step_func(diffrential_equation, s, dt, t_i)
     return np.array(states)
 
-
+simtime = dte.datetime.now()
 #run simulations
 x_analytical = A * np.cos(omega * t) + (v0 / omega) * np.sin(omega * t) # analytical solution as the "correct" answer
 x_rk4 = run_simulation(rk4.rk4_step, initial_state.copy(), t)
@@ -46,6 +47,7 @@ x_euler = run_simulation(euler.euler_step, initial_state.copy(), t)
 x_verlet = run_simulation(velocity_verlet.velocity_verlet_step, initial_state.copy(), t)
 sol = solve_ivp(shm_equation_scipy, [0, t_max], initial_state, t_eval=t, method='RK45', rtol=1e-10, atol=1e-12)
 x_scipy = sol.y[0]
+
 #eoorr calculation
 def calculate_errors(numerical, analytical):
     error = numerical - analytical
@@ -55,9 +57,9 @@ def calculate_errors(numerical, analytical):
 
 methods = {
     "RK4": x_rk4,
-#    "Scipy RK45": x_scipy,
-#    "Euler": x_euler,
-#    "Velocity Verlet": x_verlet
+    "Scipy RK45": x_scipy,
+    "Euler": x_euler,
+    "Velocity Verlet": x_verlet
 }
 
 
@@ -69,6 +71,12 @@ methods = {
 for name, x_num in methods.items():
     error, rmse, max_err = calculate_errors(x_num, x_analytical)
     print(f"{name}:\n  RMSE: {rmse:.6e}\n  Max Error: {max_err:.6e}\n")
+
+
+
+simtime = dte.datetime.now() - simtime
+print(f"Simulation time: {simtime.total_seconds()} seconds")
+
 
 plt.figure(figsize=(14, 6))
 # Plotting the results
