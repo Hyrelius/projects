@@ -77,7 +77,6 @@ for name, x_num in methods.items():
 simtime = dte.datetime.now() - simtime
 print(f"Simulation time: {simtime.total_seconds()} seconds")
 
-
 plt.figure(figsize=(14, 6))
 # Plotting the results
 plt.subplot(1, 2, 1)

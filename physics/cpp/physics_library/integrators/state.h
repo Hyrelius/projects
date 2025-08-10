@@ -1,9 +1,12 @@
 #ifndef STATE_H
 #define STATE_H
+#include <vector>
 
-class State {
-    //blank for now
-    const int number = 3;
+struct State
+{
+    std::vector<long double> position;
+    std::vector<long double> velocity;
 };
+
 
 #endif
