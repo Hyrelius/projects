@@ -76,9 +76,9 @@ int main() {
         x_analytical[i] = analytical_solution(t[i]);
 
     // Run simulations
-   // std::vector<long double> x_rk4 = run_simulation(rk4_step, initial_state, t);
+    std::vector<long double> x_rk4 = run_simulation(rk4_step, initial_state, t);
     std::vector<long double> x_euler = run_simulation(euler_step, initial_state, t);
-    //std::vector<long double> x_verlet = run_simulation(velocity_verlet_step, initial_state, t);
+    std::vector<long double> x_verlet = run_simulation(velocity_verlet_step, initial_state, t);
 
     // Error calculation and print stats
     struct MethodResult {
@@ -86,9 +86,9 @@ int main() {
         std::vector<long double> values;
     };
     std::vector<MethodResult> methods = {
-     //   { "RK4", x_rk4 },
+        { "RK4", x_rk4 },
         { "Euler", x_euler },
-    //    { "Velocity Verlet", x_verlet }
+        { "Velocity Verlet", x_verlet }
     };
 
     for (const auto& method : methods) {

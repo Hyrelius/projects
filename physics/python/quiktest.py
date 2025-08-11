@@ -25,7 +25,7 @@ positions = np.zeros(steps)
 for i in range(steps):
     positions[i] = baller.get_position()[1]
     baller.state = rk4_step(basic, baller.state, 0.1, i * 0.1)
-steps = 22
+"""steps = 22
 state = [0,0,0,10]
 baller = ball()
 baller.state = state
@@ -33,12 +33,14 @@ positionsverlet = np.zeros(steps)
 for i in range(steps):
     positions[i] = baller.get_position()[1]
     baller.state = velocity_verlet_step(basic, baller.state, 0.1, i * 0.1)
-
-
-
+"""
 print(positions)
+for i in range(steps):
+    print(f"Step {i}: Position = {positions[i]}")
+
+
 plt.plot(np.arange(steps) * 0.1, positions)
-plt.plot(np.arange(steps) * 0.1, positionsverlet)
+#plt.plot(np.arange(steps) * 0.1, positionsverlet)
 plt.xlabel('Time (s)')  
 plt.ylabel('Vertical Position (m)')
 plt.title('Vertical Position of Ball Over Time')    
