@@ -3,7 +3,7 @@
 #include "state.h"
 
 
-State euler_step(State (*f)(State state, double), State state, double dt, double t);
+State euler_step(State (*f)(State state, long double), State state, long double dt, long double t);
 State velocity_verlet_step();
 State rk4_step();
 #endif
