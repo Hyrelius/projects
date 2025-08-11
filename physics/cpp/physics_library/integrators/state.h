@@ -18,6 +18,18 @@ inline std::vector<long double> multiply_vector(const std::vector<long double>& 
     return result;
 }
 
+inline std::vector<long double> operator*(const std::vector<long double>& v, long double scalar) {
+    return multiply_vector(v, scalar);
+}
+
+inline std::vector<long double> operator+(const std::vector<long double>& a, const std::vector<long double>& b) {
+    return add_vectors(a, b);
+}
+
+inline std::vector<long double> operator*(long double scalar, const std::vector<long double>& v) {
+    return multiply_vector(v, scalar);
+}
+
 
 
 struct State
