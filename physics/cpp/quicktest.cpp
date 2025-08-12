@@ -27,37 +27,56 @@ class Ball {
         
 };
 
+void export_to_csv(const std::vector<long double>& data, const std::vector<long double>& times, const std::string& filename) {
+    std::ofstream file(filename);
+    if (file.is_open()) {
+        file << "time,value\n";
+        for (size_t i = 0; i < data.size() && i < times.size(); ++i) {
+            file << std::fixed << std::setprecision(6) << times[i] << "," << data[i] << "\n";
+        }
+        file.close();
+    } else {
+        std::cerr << "Error opening file: " << filename << "\n";
+    }
+}
 
-State differential_equation(State state, long double /*t*/) {
-    state.position = state.velocity;
-    state.velocity[0] = 0;
-    state.velocity[1] = -9.81L; 
-    return state;
+
+State differential_equation(State derivative, long double /*t*/) {
+    derivative.position = derivative.velocity;
+    derivative.velocity[0] = 0.0L; 
+    derivative.velocity[1] = 0.0L; 
+    return derivative;
 }
 
 
 int main() {
-    int steps = 100;
 
-    State initial_state;
-    initial_state.position = {0.0L, 0.0L};
-    initial_state.velocity = {0.0L, 10.0L};
+    int steps = 10000;
+    State initial_state = {{0.0L, 0.0L}, {2.0L, 0.0L}};
 
     Ball ball;
     ball.state = initial_state;
 
     std::vector<long double> state_positions(steps);
+
+    long double dt = 0.1L;
+    std::vector<long double> times(steps);
+
+
     for (int i = 0; i < steps; i++) {
-        state_positions[i] = ball.getPosition()[1];
+        state_positions[i] = ball.getPosition()[0];
         ball.state = rk4_step(differential_equation, ball.state, 0.1L, i * 0.1L);
-        floor_collision(ball.state, 0.9L);
+        floor_collision(ball.state, 0, 0.8L);
+        wall_collision(ball.state, 5, 0.5L);
+        wall_collision(ball.state, -5, 0.5L);
+        times[i] = i * dt;
     }
 
-    std::cout << "Ball positions after RK4 steps:\n";
     for (int i = 0; i < steps; i++) {
         std::cout << "Step " << i << ": Position = " << state_positions[i] << "\n";
     };
-
-
+    
+    export_to_csv(state_positions,times ,"ball_positions.csv");
+    return 0;
 
 }
