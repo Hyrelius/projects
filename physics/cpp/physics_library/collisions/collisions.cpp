@@ -33,6 +33,7 @@ void collision(State &state1, State &state2, long double restitution /* = 1.0L *
     long double m2 = state2.mass;
     // decomposed velcoty vectors
     // calculate collisions - learn equations
+    // theser were not needed
     // m1v1 + m2v2 = m1u1 + m2u2
     // m1u1x + m2u2x = m1v1x + m2v2x
     // m2u1y + m2u2y = m1v1y + m2v2y
@@ -43,7 +44,7 @@ void collision(State &state1, State &state2, long double restitution /* = 1.0L *
     long double length = sqrt(nx * nx + ny * ny);
     if (length == 0)
         return;
-    // normalize
+    // normalize - but why?
     nx /= length;
     ny /= length;
     // what now
