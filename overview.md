@@ -6,4 +6,7 @@ informal because it is humanising
 waffling because i am the only one ever reading this lol  
 digital foot print yay!  
 
-small change to test codespace
+### TODO list
+- finish collision function
+- add gravity - astrophysical sim - rk4 not usd because not symplectic?
+- renderer

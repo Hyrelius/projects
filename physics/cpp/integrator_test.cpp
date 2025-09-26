@@ -10,11 +10,11 @@
 
 // Constants
 const long double PI = std::acos(-1.0L);
-const long double omega = 2 * PI;  // angular frequency (1 Hz)
-const long double A = 1.0L;        // initial displacement
-const long double v0 = 0.0L;       // initial velocity
-const long double t_max = 1000.0L; // time duration
-const long double dt = 0.001L;     // timestep
+const long double omega = 2 * PI; // angular frequency (1 Hz)
+const long double A = 1.0L;       // initial displacement
+const long double v0 = 0.0L;      // initial velocity
+const long double t_max = 16.0L;  // time duration
+const long double dt = 0.001L;    // timestep
 
 // Differential equation: dx/dt = v, dv/dt = -omega^2 * x
 State differential_equation(State state, long double /*t*/)
