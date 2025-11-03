@@ -20,7 +20,6 @@ coefficients = np.polyfit(period, orbital_semi_major_axis, 1)
 best_fit = np.poly1d(coefficients)
 
 print(coefficients[0])
-print("close to unity")
 
 plt.scatter(orbital_semi_major_axis, period, color='blue', label=planets)
 plt.plot(orbital_semi_major_axis, best_fit(orbital_semi_major_axis), "r-")
